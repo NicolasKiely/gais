@@ -1,17 +1,17 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
-#define GAIS_WORD byte
+#define GAIS_WORD char
 
-struct op{
+struct Op{
 	/* Instruction */
-	GAIS_WORD inst;
+	GAIS_WORD in;
 	
 	/* Base parameter */
-	GAIS_WORD basePrm;
+	GAIS_WORD bp;
 	
 	/* Wing parameter */
-	GAIS_WORD wingPrm;
+	GAIS_WORD wp;
 };
 
 #endif
