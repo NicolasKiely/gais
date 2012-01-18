@@ -17,60 +17,58 @@ Num | Short | Long                    | Parameters                            |
   4 | exec  | execute system call     | function ID                           |
 	Calls virtual machine system call by id [base]                            |
 ----+-------+-------------------------+---------------------------------------+
-  5 | pop   | pop stack               | flag (input/system, pop/read), var    |
-	Pops data from a stack based on a flag [base] into handle [wing]          |
-	 Flag specifies if reading from environment or system input stack, and    |
-	 if to increment stack pointer or simply just read value                  |
+  5 | pop   | pop stack               | ????? var                             |
+	Pops into variable [wing] from system stack                               |
 ----+-------+-------------------------+---------------------------------------+
-  6 | push  | push stack              | flag (output/system, pop/write), var  |
-	Pushes data to a stack based on a flag [base] from handle [wing]          |
-	 Flag specifies if writing to environment or system output stack, and if  |
-	 to increment stack pointer or simply write value                         |
+  6 | push  | push stack              | ?????, data                           |
+	Pushes data [wing] to system                                              |
 ----+-------+-------------------------+---------------------------------------+
-  7 | add   | add                     | a + b                                 |
+  7 | in    | input                   | ?????, var                            |
+    Pops data into var [wing] from environment stack                          |
+----+-------+-------------------------+---------------------------------------+
+  8 | out   | output                  | ?????, data                           |
+	Outputs data [wing] into environment output stack                         |
+----+-------+-------------------------+---------------------------------------+
+  9 | add   | add                     | a + b                                 |
 	Adds wing to base, and sends output to ans var. Same for below            |
 ----+-------+-------------------------+---------------------------------------+
-  8 | sub   | subtract                | a - b                                 |
+ 10 | sub   | subtract                | a - b                                 |
 ----+-------+-------------------------+---------------------------------------+
-  9 | mul   | multiply                | a * b                                 |
+ 11 | mul   | multiply                | a * b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 10 | div   | divide                  | a / b                                 |
+ 12 | div   | divide                  | a / b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 11 | mod   | modulus                 | a % b                                 |
+ 13 | mod   | modulus                 | a % b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 12 | pow   | power                   | a ** b                                |
+ 14 | pow   | power                   | a ** b                                |
 ----+-------+-------------------------+---------------------------------------+
- 13 | bAND  | binary AND              | a & b                                 |
+ 15 | bAND  | binary AND              | a & b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 14 | bNAND | binary NOT AND          | ~(a & b)                              |
+ 16 | bNAND | binary NOT AND          | ~(a & b)                              |
 ----+-------+-------------------------+---------------------------------------+
- 15 | bOR   | binary OR               | a | b                                 
-----+-------+-------------------------+---------------------------------------+|
- 16 | bNOR  | binary NOT OR           | ~(a | b)                              |
+ 17 | bOR   | binary OR               | a | b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 17 | bXOR  | binary EXLUSIVE OR      | a ^ b                                 |
+ 18 | bNOR  | binary NOT OR           | ~(a | b)                              |
 ----+-------+-------------------------+---------------------------------------+
- 18 | bNXOR | binary NOT EXCLUSIVE OR | ~(a ^ b)                              |
+ 19 | bXOR  | binary EXLUSIVE OR      | a ^ b                                 |
 ----+-------+-------------------------+---------------------------------------+
- 19 | bNOT  | binary NOT              | ~a                                    |
+ 20 | bNXOR | binary NOT EXCLUSIVE OR | ~(a ^ b)                              |
 ----+-------+-------------------------+---------------------------------------+
- 20 | lAND  | logic AND               | a && b                                |
+ 21 | bNOT  | binary NOT              | ~a                                    |
 ----+-------+-------------------------+---------------------------------------+
- 21 | lNAND | logic NOT AND           | !(a && b)                             |
+ 22 | lAND  | logic AND               | a && b                                |
 ----+-------+-------------------------+---------------------------------------+
- 22 | lOR   | logic OR                | a || b                                |
+ 23 | lNAND | logic NOT AND           | !(a && b)                             |
 ----+-------+-------------------------+---------------------------------------+
- 23 | lNOR  | logic NOT OR            | !(a || b)                             |
+ 24 | lOR   | logic OR                | a || b                                |
 ----+-------+-------------------------+---------------------------------------+
- 24 | lXOR  | logic EXCLUSIVE OR      | (~(a == 0)) ^ (~(b == 0))             |
+ 25 | lNOR  | logic NOT OR            | !(a || b)                             |
 ----+-------+-------------------------+---------------------------------------+
- 25 | lNXOR | logic NOT EXCLUSIVE OR  | !( (~(a == 0)) ^ (~(b == 0)) )        |
+ 26 | lXOR  | logic EXCLUSIVE OR      | (~(a == 0)) ^ (~(b == 0))             |
 ----+-------+-------------------------+---------------------------------------+
- 26 | lNOT  | logic NOT               | !a                                    |
+ 27 | lNXOR | logic NOT EXCLUSIVE OR  | !( (~(a == 0)) ^ (~(b == 0)) )        |
 ----+-------+-------------------------+---------------------------------------+
- 27 |       |                         |                                       |
-----+-------+-------------------------+---------------------------------------+
- 28 |       |                         |                                       |
+ 28 | lNOT  | logic NOT               | !a                                    |
 ----+-------+-------------------------+---------------------------------------+
  29 |       |                         |                                       |
 ----+-------+-------------------------+---------------------------------------+

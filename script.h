@@ -1,4 +1,4 @@
-#ifdef SCRIPT_H
+#ifndef SCRIPT_H
 #define SCRIPT_H
 
 #include "operation.h"

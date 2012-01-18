@@ -1,4 +1,4 @@
-#ifdef CELL_H
+#ifndef CELL_H
 #define CELL_H
 
 #include "script.h"

@@ -1,4 +1,4 @@
-#ifdef CELLPARAMETERS_H
+#ifndef CELLPARAMETERS_H
 #define CELL_PARAMETERS_H
 
 /* Data word size used in the gais VM */
