@@ -1,21 +1,34 @@
 Num | Short | Long                    | Parameters                            |
 ----+-------+-------------------------+---------------------------------------+
   0 | mov   | move                    | source -> destination                 |
-	Moves source value [wing] to destination [base]                           |
+	Moves source value [base] to destination [wing]                           |
 ----+-------+-------------------------+---------------------------------------+
   1 | jmpA  | jump absolute           | position, conditional                 |
+	Jumps to absolute position [base] in script if conditional [wing]         |
+	 is true                                                                  |
 ----+-------+-------------------------+---------------------------------------+
   2 | jmpR  | jump relative           | position, conditional                 |
+	Jumps by relative position [base - half word] in script if                |
+	 conditional [wing] is true                                               |
 ----+-------+-------------------------+---------------------------------------+
-  3 | call  | call script             | script ID                             |
+  3 | call  | call script             | script ID, position                   |
+	Calls script by id [base], starting at position [wing]                    |
 ----+-------+-------------------------+---------------------------------------+
   4 | exec  | execute system call     | function ID                           |
+	Calls virtual machine system call by id [base]                            |
 ----+-------+-------------------------+---------------------------------------+
   5 | pop   | pop stack               | flag (input/system, pop/read), var    |
+	Pops data from a stack based on a flag [base] into handle [wing]          |
+	 Flag specifies if reading from environment or system input stack, and    |
+	 if to increment stack pointer or simply just read value                  |
 ----+-------+-------------------------+---------------------------------------+
   6 | push  | push stack              | flag (output/system, pop/write), var  |
+	Pushes data to a stack based on a flag [base] from handle [wing]          |
+	 Flag specifies if writing to environment or system output stack, and if  |
+	 to increment stack pointer or simply write value                         |
 ----+-------+-------------------------+---------------------------------------+
   7 | add   | add                     | a + b                                 |
+	Adds wing to base, and sends output to ans var. Same for below            |
 ----+-------+-------------------------+---------------------------------------+
   8 | sub   | subtract                | a - b                                 |
 ----+-------+-------------------------+---------------------------------------+
