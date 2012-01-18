@@ -3,6 +3,7 @@
 
 #define GAIS_WORD char
 
+/* Operation structure */
 struct Op{
 	/* Instruction */
 	GAIS_WORD in;

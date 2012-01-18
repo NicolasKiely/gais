@@ -3,16 +3,14 @@
 
 #include "operation.h"
 
-
-struct Script{
+/* Script structure */
+struct Scp{
 	/* List of operations */
 	Op* pOps;
 	
 	/* Operation count */
-	GAIS_WORD cOps;
-	
-	
-}
+	GAIS_WORD cOps;	
+};
 
 
 #endif
