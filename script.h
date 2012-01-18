@@ -2,6 +2,7 @@
 #define SCRIPT_H
 
 #include "operation.h"
+#include "cellparameters.h"
 
 /* Script structure */
 struct Scp{

@@ -3,7 +3,7 @@
 
 #include "script.h"
 
-
+/* Cell Structure */
 struct Cell{
 	/* List of scripts */
 	Scp* pScp;

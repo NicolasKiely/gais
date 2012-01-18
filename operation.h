@@ -1,7 +1,7 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
-#define GAIS_WORD char
+#include "cellparameters.h"
 
 /* Operation structure */
 struct Op{
