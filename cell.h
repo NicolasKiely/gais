@@ -10,6 +10,9 @@ struct Cell{
 	
 	/* Script count */
 	Scp* cScp;
+	
+	/* Pointer to active script */
+	Scp* iScp;
 };
 
 
