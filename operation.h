@@ -18,4 +18,18 @@ struct Op{
 	GAIS_WORD wp;
 };
 
+
+/* Parameter definitions for operations */
+enum OpParDef{
+	/* Variable [00]*/
+	DEFVAR = 0,
+	/* Pointer [01]*/
+	DEFPTR = 1,
+	/* Constant/Literal/Value  [10]*/
+	DEFVAL = 2,
+	/* Ignore operation [11]*/
+	DEFIGN = 3
+};
+
+
 #endif
