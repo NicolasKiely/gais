@@ -26,10 +26,10 @@ struct Op{
 	GAIS_WORD in;
 	
 	/* Base parameter */
-	GAIS_WORD bp;
+	GAIS_WORD bs;
 	
 	/* Wing parameter */
-	GAIS_WORD wp;
+	GAIS_WORD wg;
 };
 
 
