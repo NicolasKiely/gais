@@ -6,14 +6,18 @@
 /* Cell Structure */
 struct Cell{
 	/* List of scripts */
-	Scp* pScp;
+	Scp* pScps;
 	
 	/* Script count */
-	Scp* cScp;
+	Scp* cScps;
 	
-	/* Pointer to active script */
-	Scp* iScp;
+	/* Index of active script */
+	GAIS_WORD iScp;
 };
+
+
+/* Returns pointer to a cell's active script */
+Scp* getCellActScp(Cell* pCell);
 
 
 #endif

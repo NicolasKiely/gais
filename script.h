@@ -10,7 +10,10 @@ struct Scp{
 	Op* pOps;
 	
 	/* Operation count */
-	GAIS_WORD cOps;	
+	GAIS_WORD cOps;
+	
+	/* Index of active operation */
+	GAIS_WORD iOp;
 };
 
 
