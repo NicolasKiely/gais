@@ -7,13 +7,19 @@
 /* Script structure */
 struct Scp{
 	/* List of operations */
-	Struct Op* pOps;
+	struct Op* pOps;
 	
 	/* Operation count */
 	GAIS_WORD cOps;
 	
 	/* Index of active operation */
 	GAIS_WORD iOp;
+	
+	/* Script private memory */
+	GAIS_WORD* pMem;
+	
+	/* Private memory size */
+	GAIS_WORD cMem;
 };
 
 

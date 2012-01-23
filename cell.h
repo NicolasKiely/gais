@@ -13,6 +13,12 @@ struct Cell{
 	
 	/* Index of active script */
 	GAIS_WORD iScp;
+	
+	/* Cell public memory */
+	GAIS_WORD* pMem;
+	
+	/* Cell memory size */
+	GAIS_WORD cMem;
 };
 
 
