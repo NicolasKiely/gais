@@ -3,10 +3,14 @@
 #include "cell.h"
 #include "cellexecuter.h"
 
-void cellStep(Cell *pCell){
+void cellStep(struct Cell* pCell){
 	if (pCell == null) {
 		return;
 	}
 
+	/* Get active script */
+	Scp* pScp = getCellActScp(pCell);
+	
+	/* Get active operation */
 	
 }

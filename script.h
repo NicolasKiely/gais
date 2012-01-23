@@ -17,4 +17,8 @@ struct Scp{
 };
 
 
+/* Gets a script's active operation */
+Op* getScpActOp(struct Scp* pScp);
+
+
 #endif

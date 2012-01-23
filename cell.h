@@ -17,7 +17,7 @@ struct Cell{
 
 
 /* Returns pointer to a cell's active script */
-Scp* getCellActScp(Cell* pCell);
+Scp* getCellActScp(struct Cell* pCell);
 
 
 #endif

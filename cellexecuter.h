@@ -9,7 +9,7 @@
 	- Get current operation to execute
 	- Execute operation
  */
-void cellStep(Cell *pCell);
+void cellStep(struct Cell* pCell);
 
 
 #endif
