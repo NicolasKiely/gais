@@ -7,7 +7,7 @@
 /* Script structure */
 struct Scp{
 	/* List of operations */
-	Op* pOps;
+	Struct Op* pOps;
 	
 	/* Operation count */
 	GAIS_WORD cOps;

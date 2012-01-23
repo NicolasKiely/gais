@@ -1,3 +1,4 @@
+#include "script.h"
 #include "cell.h"
 
 Scp* getCellActScp(struct Cell* pCell){

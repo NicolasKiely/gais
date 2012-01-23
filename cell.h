@@ -6,10 +6,10 @@
 /* Cell Structure */
 struct Cell{
 	/* List of scripts */
-	Scp* pScps;
+	struct Scp* pScps;
 	
 	/* Script count */
-	Scp* cScps;
+	struct Scp* cScps;
 	
 	/* Index of active script */
 	GAIS_WORD iScp;

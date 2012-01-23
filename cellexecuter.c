@@ -9,8 +9,9 @@ void cellStep(struct Cell* pCell){
 	}
 
 	/* Get active script */
-	Scp* pScp = getCellActScp(pCell);
+	Struct Scp* pScp = getCellActScp(pCell);
 	
 	/* Get active operation */
+	Struct Op* pOp = getScpActOp(pScp);
 	
 }
