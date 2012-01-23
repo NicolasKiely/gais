@@ -3,6 +3,9 @@
 
 #include "cellparameters.h"
 
+/* Memory unit in gais' virtual machine */
+#define GAIS_WORD char
+
 /* Operation structure */
 struct Op{
 	/* Instruction */
