@@ -28,21 +28,38 @@ void cellStep(struct Cell* pCell){
 	/* Figure out parameters */
 	switch (bsDef) {
 		case DEFVAR:
+      /* Reference variable */
+      pBs = refCellMem(pCell, pCell->iScp, pOp->bs);
 			break;
+      
 		case DEFPTR:
+      /* Reference pointer */
+      GAIS_WORD tempIRef = @refCellMem(pCell, pCell->iScp, pOp->bs);
+      pBs = refCellMem(pCell, pCell->iScp, tempIRef);
 			break;
+      
 		case DEFVAL:
+      /* Reference as value. Since we're using pointers, we need to use
+          to use some kind of temporary store to reference.
+       */
 			tempVar = pOp->bs;
 			pBs = @tempVar;
 			break;
+      
 		case DEFIGN:
+      /* ??? */
 			break;
 	}
 	
+  /* Same as above */
 	switch (wgDef) {
 		case DEFVAR:
+      pWg = refCellMem(pCell, pCell->iScp, pOp->wg);
 			break;
+      
 		case DEFPTR:
+      GAIS_WORD tempIRef = @refCellMem(pCell, pCell->iScp, pOp->wg);
+      pBs = refCellMem(pCell, pCell->iScp, tempIRef);
 			break;
 	}
 }
