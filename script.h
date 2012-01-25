@@ -22,6 +22,11 @@ struct Scp{
 	GAIS_WORD cMem;
 };
 
+/* Script memory addressing structure:
+	Memory addresses from 0 to cMem-1 are private memory. Everything beyond
+	is cell public memory.
+ */
+
 
 /* Gets a script's active operation */
 Op* getScpActOp(struct Scp* pScp);

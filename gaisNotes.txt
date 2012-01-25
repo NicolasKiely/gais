@@ -1,1 +1,8 @@
 work on cell/script memory space
+
+
+
+cell parameters:
+- Private/public memory ratio
+- script length
+- # of scripts

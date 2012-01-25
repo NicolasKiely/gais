@@ -25,5 +25,8 @@ struct Cell{
 /* Returns pointer to a cell's active script */
 Scp* getCellActScp(struct Cell* pCell);
 
+/* Returns pointer to variable in a script's address space */ 
+GAIS_WORD* refCellMem(struct Cell* pCell, GAIS_WORD iScp, GAIS_WORD iVar);
+
 
 #endif
