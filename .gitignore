@@ -2,3 +2,4 @@
 *.swo
 *.o
 bin/gais*
+scripts/*
