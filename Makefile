@@ -11,7 +11,7 @@ cc = $(CC) $(CFLAGS)
 ###############################################################################
 # Target binary files                                                         #
 ###############################################################################
-bin/compiler: obj/lang_compiler.o obj/lang_tokenizer.o
+bin/gais_compiler: obj/lang_compiler.o obj/lang_tokenizer.o
 	$(cc) obj/lang_compiler.o obj/lang_tokenizer.o -o bin/compiler
 	
 
