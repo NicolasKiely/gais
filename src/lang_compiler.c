@@ -12,6 +12,7 @@
 #define CLEANUP_MAIN fcleanup(&fin, &fout, &tokens)
 #define CLEANUP_MAIN_FAILURE CLEANUP_MAIN; return EXIT_FAILURE
 #define CLEANUP_MAIN_SUCCESS CLEANUP_MAIN; return EXIT_SUCCESS
+
 /**
  * Helper function to cleanup main()'s top-level data structures
  */

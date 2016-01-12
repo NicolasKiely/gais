@@ -51,27 +51,23 @@ void initializeTokenContext(
   tc->states[TKNST_INTR].readChar = NULL;
   tc->states[TKNST_INTR].nextState = tknstIntrNext;
 
-  /* Numberic state */
-  /*
-  tc->states[TKNST_NUMR].enter = tknstNumrEnter;
+  /* Numeric state */
+  tc->states[TKNST_NUMR].enter = tknstTknEnter;
   tc->states[TKNST_NUMR].exit = tknstNumrExit;
-  tc->states[TKNST_NUMR].readChar = tknstNumrRead;
+  tc->states[TKNST_NUMR].readChar = tknstTknRead;
   tc->states[TKNST_NUMR].nextState = tknstNumrNext;
-  */
 
   /* Symbolic state */
-  tc->states[TKNST_SYMB].enter = tknstSymbEnter;
+  tc->states[TKNST_SYMB].enter = tknstTknEnter;
   tc->states[TKNST_SYMB].exit = tknstSymbExit;
-  tc->states[TKNST_SYMB].readChar = tknstSymbRead;
+  tc->states[TKNST_SYMB].readChar = tknstTknRead;
   tc->states[TKNST_SYMB].nextState = tknstSymbNext;
 
   /* Operator state */
-  /*
   tc->states[TKNST_OPER].enter = tknstOperEnter;
   tc->states[TKNST_OPER].exit = tknstOperExit;
   tc->states[TKNST_OPER].readChar = tknstOperRead;
   tc->states[TKNST_OPER].nextState = tknstOperNext;
-  */
 
   /* Comment state */
   /*
@@ -134,20 +130,15 @@ TokenState *tknstIntrNext(
 ){
   TokenContext *tc = (TokenContext *) context;
 
-  /*if (isdigit(c)){
-    return tc->state + TKNST_NUMR;
-
-  } else if (isalpha(c)){
-    return tc->state + TKNST_SYMB;
-
-  } else if (isoperator(c)){
-    return tc->state + TKNST_OPER;
-
-  } else if (isspace(c)){
-    return tc->state + TKNST_INTR;
-  }*/
   if (isspace(c)){
     return tc->state + TKNST_INTR;
+
+  } else if (isdigit(c)) {
+    return tc->state + TKNST_NUMR;
+
+  } else if (isoperator(c)) {
+    return tc->state + TKNST_OPER;
+
   } else {
     return tc->state + TKNST_SYMB;
   }
@@ -156,9 +147,8 @@ TokenState *tknstIntrNext(
 }
 
 
-/* Numberic state */
-/* Symbolic state */
-void tknstSymbEnter(
+/* Generic state */
+void tknstTknEnter(
     void *context
 ){
   TokenContext *tc = (TokenContext *) context;
@@ -174,17 +164,7 @@ void tknstSymbEnter(
 }
 
 
-void tknstSymbExit(
-    void *context
-){
-  TokenContext *tc = (TokenContext *) context;
-  Token *t = tc->last;
-  t->value[t->len] = '\0';
-  printf("Symbol token: %s\n", t->value);
-}
-
-
-void tknstSymbRead(
+void tknstTknRead(
     int c,
     void *context
 ){
@@ -202,6 +182,44 @@ void tknstSymbRead(
 }
 
 
+/* Numberic state */
+void tknstNumrExit(
+  void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  Token *t = tc->last;
+  t->value[t->len] = '\0';
+  printf("Numeric token: %s\n", t->value);
+}
+
+
+struct tokenState *tknstNumrNext(
+    int c,
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+
+  if (isspace(c)){
+    return tc->states + TKNST_INTR;
+  } else if (isoperator(c) && c!='.'){
+    return tc->states + TKNST_OPER;
+  } else {
+    return tc->states + TKNST_NUMR;
+  }
+}
+
+
+/* Symbolic state */
+void tknstSymbExit(
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  Token *t = tc->last;
+  t->value[t->len] = '\0';
+  printf("Symbol token: %s\n", t->value);
+}
+
+
 struct tokenState *tknstSymbNext(
     int c,
     void *context
@@ -210,6 +228,10 @@ struct tokenState *tknstSymbNext(
 
   if (isspace(c)){
     return tc->states + TKNST_INTR;
+
+  } else if (isoperator(c)){
+    return tc->states + TKNST_OPER;
+
   } else {
     return tc->states + TKNST_SYMB;
   }
@@ -217,4 +239,83 @@ struct tokenState *tknstSymbNext(
 
 
 /* Operator state */
+void tknstOperEnter(
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  tknstTknEnter(context);
+
+  tc->state->data = OPER_NONE;
+}
+
+
+void tknstOperExit(
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  Token *t = tc->last;
+  t->value[t->len] = '\0';
+  printf("Operator token: %s\n", t->value);
+}
+
+
+void tknstOperRead(
+    int c,
+    void *context
+){
+  tknstTknRead(c, context);
+}
+
+
+struct tokenState *tknstOperNext(
+    int c,
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+
+  if (isspace(c)){
+    return tc->states + TKNST_INTR;
+
+  } else if (isalpha(c)){
+    return tc->states + TKNST_SYMB;
+
+  } else if (isdigit(c)){
+    return tc->states + TKNST_NUMR;
+
+  } else {
+    /* Check if symbol or operator */
+    return tc->states + TKNST_OPER;
+  }
+}
+
+
 /* Comment state */
+
+
+/* Misc helper functions for tokenizer */
+int isoperator(
+    int c
+){
+  switch (c){
+    case '!':
+    case '$':
+    case '%':
+    case '&':
+    case '(':
+    case ')':
+    case '*':
+    case '+':
+    case '-':
+    case '.':
+    case '/':
+    case ';':
+    case '<':
+    case '=':
+    case '>':
+    case '^':
+    case '{':
+    case '}':
+    return 1;
+  }
+  return 0;
+}
