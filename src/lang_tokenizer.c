@@ -245,7 +245,7 @@ void tknstOperEnter(
   TokenContext *tc = (TokenContext *) context;
   tknstTknEnter(context);
 
-  tc->state->data = OPER_NONE;
+  tc->states[TKNST_OPER].data = OPER_NONE;
 }
 
 
@@ -255,7 +255,7 @@ void tknstOperExit(
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
-  printf("Operator token: %s\n", t->value);
+  printf("Operator token: [%d] %s\n", tc->state->data, t->value);
 }
 
 
@@ -263,6 +263,33 @@ void tknstOperRead(
     int c,
     void *context
 ){
+  TokenContext *tc = (TokenContext *) context;
+  int chainOp = 0;
+  switch (tc->state->data){
+  case OPER_NONE:
+    /* Initial character of operator*/
+    chainOp = 1;
+
+    switch (c){
+    case '!': tc->state->data = OPER_EXCL; break;
+    case '$': tc->state->data = OPER_SYS; break;
+    case '%': tc->state->data = OPER_MOD; break;
+    case '&': tc->state->data = OPER_AMP; break;
+    case '(': tc->state->data = OPER_OPRN; break;
+    case ')': tc->state->data = OPER_CPRN; break;
+    default:
+      printf("Unknown operator: %c\n", c);
+    }
+
+    break;
+  }
+
+  if (!chainOp){
+    /* If operator doesn't chain, then start new one */
+    tknstOperExit(context);
+    tknstOperEnter(context);
+  }
+
   tknstTknRead(c, context);
 }
 
@@ -281,11 +308,9 @@ struct tokenState *tknstOperNext(
 
   } else if (isdigit(c)){
     return tc->states + TKNST_NUMR;
-
-  } else {
-    /* Check if symbol or operator */
-    return tc->states + TKNST_OPER;
   }
+
+  return tc->states + TKNST_OPER;
 }
 
 

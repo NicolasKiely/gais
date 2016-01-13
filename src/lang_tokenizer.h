@@ -15,7 +15,35 @@
 #define TKNST_COUNT 5
 
 /** Operator indices */
-#define OPER_NONE 0
+#define OPER_NONE  0 // Initial operation
+#define OPER_EXCL  1 // ! 
+#define OPER_HASH  2 // #
+#define OPER_SYS   3 // $
+#define OPER_MOD   4 // %
+#define OPER_AMP   5 // &
+#define OPER_OPRN  6 // (
+#define OPER_CPRN  7 // )
+#define OPER_STAR  8 // *
+#define OPER_PLUS  9 // +
+#define OPER_COM  10 // ,
+#define OPER_DASH 11 // -
+#define OPER_DOT  12 // .
+#define OPER_FSLS 13 // /
+#define OPER_CLN  14 // :
+#define OPER_SCLN 15 // ;
+#define OPER_LT   16 // <
+#define OPER_EQ   17 // =
+#define OPER_GT   18 // >
+#define OPER_HUH  19 // ?
+#define OPER_AT   20 // @
+#define OPER_OBRK 21 // [
+#define OPER_BSLS 22 // Backslash
+#define OPER_CBRK 23 // ]
+#define OPER_CRT  24 // ^
+#define OPER_OCRL 25 // {
+#define OPER_PIPE 26 // |
+#define OPER_CCRL 27 // }
+#define OPER_TLD  28 // ~
 
 
 /*****************************************************************************\
