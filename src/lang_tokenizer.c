@@ -14,6 +14,7 @@ Token *newToken()
   t->size = TOKEN_INIT_SIZE;
   t->value = malloc(t->size);
   t->next = NULL;
+  t->data = 0;
 
   return t;
 }
@@ -189,7 +190,7 @@ void tknstNumrExit(
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
-  printf("Numeric token: %s\n", t->value);
+  t->type = tc->state - tc->states;
 }
 
 
@@ -216,7 +217,7 @@ void tknstSymbExit(
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
-  printf("Symbol token: %s\n", t->value);
+  t->type = tc->state - tc->states;
 }
 
 
@@ -245,7 +246,7 @@ void tknstOperEnter(
   TokenContext *tc = (TokenContext *) context;
   tknstTknEnter(context);
 
-  tc->states[TKNST_OPER].data = OPER_NONE;
+  tc->last->data = OPER_NONE;
 }
 
 
@@ -255,7 +256,7 @@ void tknstOperExit(
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
-  printf("Operator token: [%d] %s\n", tc->state->data, t->value);
+  t->type = tc->state - tc->states;
 }
 
 
@@ -264,30 +265,50 @@ void tknstOperRead(
     void *context
 ){
   TokenContext *tc = (TokenContext *) context;
+  Token *t = tc->last;
   int chainOp = 0;
-  switch (tc->state->data){
+  int opState;
+
+  switch (t->data){
   case OPER_NONE:
     /* Initial character of operator*/
     chainOp = 1;
 
     switch (c){
-    case '!': tc->state->data = OPER_EXCL; break;
-    case '$': tc->state->data = OPER_SYS; break;
-    case '%': tc->state->data = OPER_MOD; break;
-    case '&': tc->state->data = OPER_AMP; break;
-    case '(': tc->state->data = OPER_OPRN; break;
-    case ')': tc->state->data = OPER_CPRN; break;
+    case '!': t->data = OPER_EXCL; break;
+    case '$': t->data = OPER_SYS; break;
+    case '%': t->data = OPER_MOD; break;
+    case '&': t->data = OPER_AMP; break;
+    case '(': t->data = OPER_OPRN; break;
+    case ')': t->data = OPER_CPRN; break;
+    case '*': t->data = OPER_STAR; break;
+    case '+': t->data = OPER_PLUS; break;
+    case '/': t->data = OPER_FSLS; break;
+    case '=': t->data = OPER_EQ; break;
     default:
       printf("Unknown operator: %c\n", c);
     }
 
     break;
+
+  case OPER_FSLS:
+    /* / */
+    switch (c){
+    case '*': t->data = OPER_MCMT; break;
+    }
+    break;
+
+  default:
+    printf("Do not know how to proceed from state 0x%X\n", t->data);
   }
 
+  //printf("Now on state 0x%X\n", tc->state->data);
+  opState = t->data;
   if (!chainOp){
     /* If operator doesn't chain, then start new one */
     tknstOperExit(context);
     tknstOperEnter(context);
+    t->data = opState;
   }
 
   tknstTknRead(c, context);
