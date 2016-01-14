@@ -1,20 +1,7 @@
 #include <ctype.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "lang_tokenizer.h"
-
-KeyWord KEY_WORDS[] = {
-  {"asm"   }, {"auto"    }, {"break"   }, {"case"    },
-  {"char"  }, {"const"   }, {"continue"}, {"default" },
-  {"do"    }, {"double"  }, {"else"    }, {"enum"    },
-  {"extern"}, {"float"   }, {"for"     }, {"goto"    },
-  {"if"    }, {"int"     }, {"long"    }, {"register"},
-  {"return"}, {"short"   }, {"signed"  }, {"sizeof"  },
-  {"static"}, {"struct"  }, {"switch"  }, {"typedef" },
-  {"union" }, {"unsigned"}, {"void"    }, {"volatile"},
-  {"while" }
-};
 
 
 /*****************************************************************************\
@@ -231,7 +218,7 @@ void tknstSymbExit(
   Token *t = tc->last;
   t->value[t->len] = '\0';
   t->type = tc->state - tc->states;
-  t->data = lookupKeywordID(t->value);
+  t->data = findKWID(t->value);
 }
 
 
@@ -463,27 +450,5 @@ void rewindToken(
     tc->last = t->prev;
 
     freeTokens(t);
-  }
-}
-
-
-int compar(
-    const void *a,
-    const void *b
-){
-  KeyWord *wa = (KeyWord *) a;
-  KeyWord *wb = (KeyWord *) b;
-  return strcmp(wa->word, wb->word);
-}
-
-int lookupKeywordID(
-    char *value
-){
-  KeyWord word = {value};
-  KeyWord *res = bsearch(&word, KEY_WORDS, KW_COUNT, sizeof(KeyWord), compar);
-  if (res == NULL){
-    return 0;
-  } else {
-    return 1 + (res - KEY_WORDS);
   }
 }
