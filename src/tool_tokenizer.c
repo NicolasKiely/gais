@@ -89,7 +89,7 @@ int main(
     case TKNST_SCMT: fprintf(fout, "Comment "); break;
     default: fprintf(fout, "UNKOWN");
     }
-    fprintf(fout, "\t%3d\t%s\n", t->data, t->value);
+    fprintf(fout, "\t0x%03X\t%s\n", t->data, t->value);
   }
 
   CLEANUP_MAIN_SUCCESS;
