@@ -16,6 +16,7 @@ Token *newToken()
   t->next = NULL;
   t->prev = NULL;
   t->data = 0;
+  t->type = -1;
 
   return t;
 }
@@ -296,9 +297,10 @@ struct tokenState *tknstOperNext(
     int c,
     TokenContext *tc
 ){
-  if (tc->last->data == OPER_MCMT){
+  int tData = tc->last->data;
+  if (tData == OPER_MCMT){
     return tc->states + TKNST_MCMT;
-  } else if (tc->last->data == OPER_SCMT){
+  } else if (tData == OPER_SCMT) {
     return tc->states + TKNST_SCMT;
   }
 
@@ -322,6 +324,7 @@ void tknstCmtEnter(
 ){
   tc->states[TKNST_MCMT].data = CMT_START;
   tc->states[TKNST_SCMT].data = CMT_START;
+  rewindToken(tc);
 }
 
 
@@ -424,10 +427,17 @@ void operatorInitState(
 void rewindToken(
     TokenContext *tc
 ){
+  Token *t = tc->last;
   if (tc->root == tc->last){
     /* Only one token exists */
+    freeTokens(t);
+    tc->root = NULL;
+    tc->last = NULL;
 
   } else {
     /* Multiple tokens exist */
+    tc->last = t->prev;
+
+    freeTokens(t);
   }
 }

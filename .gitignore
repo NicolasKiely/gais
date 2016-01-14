@@ -5,3 +5,4 @@ bin/gais*
 bin/tool*
 scripts/*
 temp/*
+*.vim
