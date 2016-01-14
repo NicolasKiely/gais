@@ -71,12 +71,11 @@ void initializeTokenContext(
   tc->states[TKNST_OPER].nextState = tknstOperNext;
 
   /* Comment state */
-  /*
   tc->states[TKNST_CMNT].enter = tknstCmntEnter;
-  tc->states[TKNST_CMNT].exit = tknstCmntExit;
+  //tc->states[TKNST_CMNT].exit = tknstCmntExit;
+  tc->states[TKNST_CMNT].exit = NULL;
   tc->states[TKNST_CMNT].readChar = tknstCmntRead;
   tc->states[TKNST_CMNT].nextState = tknstCmntNext;
-  */
 }
 
 
@@ -267,28 +266,12 @@ void tknstOperRead(
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   int chainOp = 0;
-  int opState;
 
   switch (t->data){
   case OPER_NONE:
     /* Initial character of operator*/
     chainOp = 1;
-
-    switch (c){
-    case '!': t->data = OPER_EXCL; break;
-    case '$': t->data = OPER_SYS; break;
-    case '%': t->data = OPER_MOD; break;
-    case '&': t->data = OPER_AMP; break;
-    case '(': t->data = OPER_OPRN; break;
-    case ')': t->data = OPER_CPRN; break;
-    case '*': t->data = OPER_STAR; break;
-    case '+': t->data = OPER_PLUS; break;
-    case '/': t->data = OPER_FSLS; break;
-    case '=': t->data = OPER_EQ; break;
-    default:
-      printf("Unknown operator: %c\n", c);
-    }
-
+    operatorInitState(c, t);
     break;
 
   case OPER_FSLS:
@@ -302,13 +285,11 @@ void tknstOperRead(
     printf("Do not know how to proceed from state 0x%X\n", t->data);
   }
 
-  //printf("Now on state 0x%X\n", tc->state->data);
-  opState = t->data;
   if (!chainOp){
     /* If operator doesn't chain, then start new one */
     tknstOperExit(context);
     tknstOperEnter(context);
-    t->data = opState;
+    operatorInitState(c, tc->last);
   }
 
   tknstTknRead(c, context);
@@ -320,6 +301,10 @@ struct tokenState *tknstOperNext(
     void *context
 ){
   TokenContext *tc = (TokenContext *) context;
+
+  if (tc->last->data == OPER_MCMT){
+    return tc->states + TKNST_CMNT;
+  }
 
   if (isspace(c)){
     return tc->states + TKNST_INTR;
@@ -336,7 +321,49 @@ struct tokenState *tknstOperNext(
 
 
 /* Comment state */
+void tknstCmntEnter(
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  tc->states[TKNST_CMNT].data = CMNT_START;
+}
 
+
+void tknstCmntRead(
+    int c,
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  switch (tc->state->data){
+  case CMNT_START:
+  case CMNT_TEXT:
+    if (c == '*'){
+      tc->state->data = CMNT_STAR;
+    } else {
+      tc->state->data = CMNT_TEXT;
+    }
+    break;
+
+  case CMNT_STAR:
+    if (c == '/'){
+      tc->state->data = CMNT_DONE;
+    } else if (c != '*'){
+      tc->state->data = CMNT_TEXT;
+    }
+  }
+}
+
+/** Token state switch callback for comments */
+struct tokenState *tknstCmntNext(
+    int c,
+    void *context
+){
+  if (tc->states[STMT_CMNT]->data == CMNT_DONE){
+    return tc->states[TKNST_INTR];
+  } else {
+    return tc->state;
+  }
+}
 
 /* Misc helper functions for tokenizer */
 int isoperator(
@@ -364,4 +391,25 @@ int isoperator(
     return 1;
   }
   return 0;
+}
+
+
+void operatorInitState(
+    int c,
+    Token *t
+){
+  switch (c){
+  case '!': t->data = OPER_EXCL; break;
+  case '$': t->data = OPER_SYS; break;
+  case '%': t->data = OPER_MOD; break;
+  case '&': t->data = OPER_AMP; break;
+  case '(': t->data = OPER_OPRN; break;
+  case ')': t->data = OPER_CPRN; break;
+  case '*': t->data = OPER_STAR; break;
+  case '+': t->data = OPER_PLUS; break;
+  case '/': t->data = OPER_FSLS; break;
+  case '=': t->data = OPER_EQ; break;
+  default:
+    printf("Unknown operator: %c\n", c);
+  }
 }

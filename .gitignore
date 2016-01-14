@@ -2,4 +2,6 @@
 *.swo
 *.o
 bin/gais*
+bin/tool*
 scripts/*
+temp/*

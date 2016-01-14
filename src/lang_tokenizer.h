@@ -46,6 +46,12 @@
 #define OPER_CCRL 0x1B // }
 #define OPER_TLD  0x1C // ~
 
+/* Comment states */
+#define CMNT_START 0 // Start of comment
+#define CMNT_TEXT  1 // Middle of comment
+#define CMNT_STAR  2 // * symbol encountered
+#define CMNT_DONE  3 // */ encountered
+
 
 /*****************************************************************************\
 | Token Node List                                                             |
@@ -103,6 +109,9 @@ typedef struct tokenState
 
   /* Callback function for getting next state */
   struct tokenState *(*nextState)(int c, void *context);
+
+  /* Misc state data */
+  int data;
 } TokenState;
 
 
@@ -223,6 +232,25 @@ struct tokenState *tknstOperNext(
     void *context
 );
 
+// Comment state
+
+/** Token state enter callback for comments */
+void tknstCmntEnter(
+    void *context
+);
+
+/** Token state read callback for comments */
+void tknstCmntRead(
+    int c,
+    void *context
+);
+
+/** Token state switch callback for comments */
+struct tokenState *tknstCmntNext(
+    int c,
+    void *context
+);
+
 // Token misc functions
 /** 
  * Determines whether or not a character is a valid operator
@@ -230,6 +258,16 @@ struct tokenState *tknstOperNext(
  */
 int isoperator(
     int c
+);
+
+/**
+ * Sets token's initial state from given character
+ * @param c First operator character
+ * @param t Token of operator
+ */
+void operatorInitState(
+    int c,
+    Token *t
 );
 
 
