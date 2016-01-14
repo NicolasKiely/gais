@@ -77,6 +77,9 @@ typedef struct tokenNode
 
   /* Pointer to next token in list */
   struct tokenNode *next;
+
+  /* Pointer to previous token in list */
+  struct tokenNode *prev;
 } Token;
 
 
@@ -98,26 +101,28 @@ void freeTokens(
 /*****************************************************************************\
 | Tokenization Context                                                        |
 \*****************************************************************************/
+typedef struct tokenContext TokenContext;
+
 typedef struct tokenState
 {
   /* Callback function when state first entered */
-  void (*enter)(void *context);
+  void (*enter)(TokenContext *tc);
 
   /* Callback function when state exitted */
-  void (*exit)(void *context);
+  void (*exit)(TokenContext *tc);
 
   /* Callback function for reading a single character */
-  void (*readChar)(int c, void *context);
+  void (*readChar)(int c, TokenContext *tc);
 
   /* Callback function for getting next state */
-  struct tokenState *(*nextState)(int c, void *context);
+  struct tokenState *(*nextState)(int c, TokenContext *tc);
 
   /* Misc state data */
   int data;
 } TokenState;
 
 
-typedef struct tokenContext
+struct tokenContext
 {
   /* First and last token nodes */
   Token *root;
@@ -126,7 +131,7 @@ typedef struct tokenContext
   TokenState states[TKNST_COUNT];
   TokenState *state;
 
-} TokenContext;
+};
 
 
 /**
@@ -155,7 +160,7 @@ Token *tokenizeStream(
 /** Inter-symbol jump state */
 TokenState *tknstIntrNext(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Generic token state
@@ -164,7 +169,7 @@ TokenState *tknstIntrNext(
  * Creates a new token at the end of the token list
  */
 void tknstTknEnter(
-    void *context
+    TokenContext *tc
 );
 
 /**
@@ -173,7 +178,7 @@ void tknstTknEnter(
  */
 void tknstTknRead(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Numeric token state 
@@ -181,7 +186,7 @@ void tknstTknRead(
  * Exit callback numeric tokens
  */
 void tknstNumrExit(
-    void *context
+    TokenContext *tc
 );
 
 /**
@@ -189,7 +194,7 @@ void tknstNumrExit(
  */
 struct tokenState *tknstNumrNext(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Symbol token state
@@ -199,7 +204,7 @@ struct tokenState *tknstNumrNext(
  * Caps token string with null terminator so it can be used as c-string
  */
 void tknstSymbExit(
-    void *context
+    TokenContext *tc
 );
 
 /**
@@ -207,56 +212,56 @@ void tknstSymbExit(
  */
 struct tokenState *tknstSymbNext(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Operator token state
 
 /** Token state entry callback for operators */
 void tknstOperEnter(
-    void *context
+    TokenContext *tc
 );
 
 /** Token state exit callback for operators */
 void tknstOperExit(
-    void *context
+    TokenContext *tc
 );
 
 /** Token state read callback for operators */
 void tknstOperRead(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 /** Token state switch callback for operators */
 struct tokenState *tknstOperNext(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Comment state
 
 /** Token state enter callback for comments */
 void tknstCmtEnter(
-    void *context
+    TokenContext *tc
 );
 
 /** Token state read callback for multi-line comments */
 void tknstMCmtRead(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 /** Token state read callback for single-line comments */
 void tknstSCmtRead(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 /** Token state switch callback for comments */
 struct tokenState *tknstCmtNext(
     int c,
-    void *context
+    TokenContext *tc
 );
 
 // Token misc functions
@@ -276,6 +281,15 @@ int isoperator(
 void operatorInitState(
     int c,
     Token *t
+);
+
+/**
+ * Rewinds token context by one token. Assumes at least one
+ * token exists.
+ * @param tc Token context
+ */
+void rewindToken(
+    TokenContext *tc
 );
 
 

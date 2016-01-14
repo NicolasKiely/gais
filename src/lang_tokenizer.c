@@ -14,6 +14,7 @@ Token *newToken()
   t->size = TOKEN_INIT_SIZE;
   t->value = malloc(t->size);
   t->next = NULL;
+  t->prev = NULL;
   t->data = 0;
 
   return t;
@@ -130,10 +131,8 @@ Token *tokenizeStream(
 /* Initial/Intersymbolic state */
 TokenState *tknstIntrNext(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
-
   if (isspace(c)){
     return tc->state + TKNST_INTR;
 
@@ -153,26 +152,27 @@ TokenState *tknstIntrNext(
 
 /* Generic state */
 void tknstTknEnter(
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
+  Token *t = newToken();
+
   if (!tc->root){
     /* First symbol */
-    tc->root = newToken();
+    tc->root = t;
     tc->last = tc->root;
 
   } else {
-    tc->last->next = newToken();
-    tc->last = tc->last->next;
+    tc->last->next = t;
+    t->prev = tc->last;
+    tc->last = t;
   }
 }
 
 
 void tknstTknRead(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   /* Append character to last token */
   t->value[t->len] = (char) c;
@@ -188,9 +188,8 @@ void tknstTknRead(
 
 /* Numberic state */
 void tknstNumrExit(
-  void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
   t->type = tc->state - tc->states;
@@ -199,10 +198,8 @@ void tknstNumrExit(
 
 struct tokenState *tknstNumrNext(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
-
   if (isspace(c)){
     return tc->states + TKNST_INTR;
   } else if (isoperator(c) && c!='.'){
@@ -215,9 +212,8 @@ struct tokenState *tknstNumrNext(
 
 /* Symbolic state */
 void tknstSymbExit(
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
   t->type = tc->state - tc->states;
@@ -226,10 +222,8 @@ void tknstSymbExit(
 
 struct tokenState *tknstSymbNext(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
-
   if (isspace(c)){
     return tc->states + TKNST_INTR;
 
@@ -244,19 +238,17 @@ struct tokenState *tknstSymbNext(
 
 /* Operator state */
 void tknstOperEnter(
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
-  tknstTknEnter(context);
+  tknstTknEnter(tc);
 
   tc->last->data = OPER_NONE;
 }
 
 
 void tknstOperExit(
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   t->value[t->len] = '\0';
   t->type = tc->state - tc->states;
@@ -265,9 +257,8 @@ void tknstOperExit(
 
 void tknstOperRead(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
   int splitOp = 1;
 
@@ -292,21 +283,19 @@ void tknstOperRead(
 
   if (splitOp){
     /* If operator doesn't chain, then start new one */
-    tknstOperExit(context);
-    tknstOperEnter(context);
+    tknstOperExit(tc);
+    tknstOperEnter(tc);
     operatorInitState(c, tc->last);
   }
 
-  tknstTknRead(c, context);
+  tknstTknRead(c, tc);
 }
 
 
 struct tokenState *tknstOperNext(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
-
   if (tc->last->data == OPER_MCMT){
     return tc->states + TKNST_MCMT;
   } else if (tc->last->data == OPER_SCMT){
@@ -329,9 +318,8 @@ struct tokenState *tknstOperNext(
 
 /* Comment state */
 void tknstCmtEnter(
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   tc->states[TKNST_MCMT].data = CMT_START;
   tc->states[TKNST_SCMT].data = CMT_START;
 }
@@ -339,9 +327,8 @@ void tknstCmtEnter(
 
 void tknstMCmtRead(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   switch (tc->state->data){
   case CMT_START:
   case CMT_TEXT:
@@ -364,9 +351,8 @@ void tknstMCmtRead(
 
 void tknstSCmtRead(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   if (c == '\n'){
     tc->state->data = CMT_DONE;
   }
@@ -376,9 +362,8 @@ void tknstSCmtRead(
 /** Token state switch callback for comments */
 struct tokenState *tknstCmtNext(
     int c,
-    void *context
+    TokenContext *tc
 ){
-  TokenContext *tc = (TokenContext *) context;
   if (tc->state->data == CMT_DONE){
     return tc->states + TKNST_INTR;
   } else {
@@ -432,5 +417,17 @@ void operatorInitState(
   case '=': t->data = OPER_EQ; break;
   default:
     printf("Unknown operator: %c\n", c);
+  }
+}
+
+
+void rewindToken(
+    TokenContext *tc
+){
+  if (tc->root == tc->last){
+    /* Only one token exists */
+
+  } else {
+    /* Multiple tokens exist */
   }
 }

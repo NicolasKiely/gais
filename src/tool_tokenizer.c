@@ -1,6 +1,6 @@
 /**
  * Debugger compiler tool that converts gais script to tokens
- * Usage: bin/tokenizer <input script> [output script]
+ * Usage: bin/tool_tokenizer <input script> [output script]
  */
 
 
@@ -89,7 +89,7 @@ int main(
     case TKNST_SCMT: fprintf(fout, "Comment "); break;
     default: fprintf(fout, "UNKOWN");
     }
-    fprintf(fout, "\t%d\t%s\n", t->data, t->value);
+    fprintf(fout, "\t%3d\t%s\n", t->data, t->value);
   }
 
   CLEANUP_MAIN_SUCCESS;
