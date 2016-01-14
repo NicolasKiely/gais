@@ -71,11 +71,15 @@ void initializeTokenContext(
   tc->states[TKNST_OPER].nextState = tknstOperNext;
 
   /* Comment state */
-  tc->states[TKNST_CMNT].enter = tknstCmntEnter;
-  //tc->states[TKNST_CMNT].exit = tknstCmntExit;
-  tc->states[TKNST_CMNT].exit = NULL;
-  tc->states[TKNST_CMNT].readChar = tknstCmntRead;
-  tc->states[TKNST_CMNT].nextState = tknstCmntNext;
+  tc->states[TKNST_MCMT].enter = tknstCmtEnter;
+  tc->states[TKNST_MCMT].exit = NULL;
+  tc->states[TKNST_MCMT].readChar = tknstMCmtRead;
+  tc->states[TKNST_MCMT].nextState = tknstCmtNext;
+
+  tc->states[TKNST_SCMT].enter = tknstCmtEnter;
+  tc->states[TKNST_SCMT].exit = NULL;
+  tc->states[TKNST_SCMT].readChar = tknstSCmtRead;
+  tc->states[TKNST_SCMT].nextState = tknstCmtNext;
 }
 
 
@@ -265,19 +269,20 @@ void tknstOperRead(
 ){
   TokenContext *tc = (TokenContext *) context;
   Token *t = tc->last;
-  int chainOp = 0;
+  int splitOp = 1;
 
   switch (t->data){
   case OPER_NONE:
     /* Initial character of operator*/
-    chainOp = 1;
+    splitOp = 0;
     operatorInitState(c, t);
     break;
 
   case OPER_FSLS:
     /* / */
     switch (c){
-    case '*': t->data = OPER_MCMT; break;
+    case '*': t->data = OPER_MCMT; splitOp=0; break;
+    case '/': t->data = OPER_SCMT; splitOp=0; break;
     }
     break;
 
@@ -285,7 +290,7 @@ void tknstOperRead(
     printf("Do not know how to proceed from state 0x%X\n", t->data);
   }
 
-  if (!chainOp){
+  if (splitOp){
     /* If operator doesn't chain, then start new one */
     tknstOperExit(context);
     tknstOperEnter(context);
@@ -303,7 +308,9 @@ struct tokenState *tknstOperNext(
   TokenContext *tc = (TokenContext *) context;
 
   if (tc->last->data == OPER_MCMT){
-    return tc->states + TKNST_CMNT;
+    return tc->states + TKNST_MCMT;
+  } else if (tc->last->data == OPER_SCMT){
+    return tc->states + TKNST_SCMT;
   }
 
   if (isspace(c)){
@@ -321,45 +328,59 @@ struct tokenState *tknstOperNext(
 
 
 /* Comment state */
-void tknstCmntEnter(
+void tknstCmtEnter(
     void *context
 ){
   TokenContext *tc = (TokenContext *) context;
-  tc->states[TKNST_CMNT].data = CMNT_START;
+  tc->states[TKNST_MCMT].data = CMT_START;
+  tc->states[TKNST_SCMT].data = CMT_START;
 }
 
 
-void tknstCmntRead(
+void tknstMCmtRead(
     int c,
     void *context
 ){
   TokenContext *tc = (TokenContext *) context;
   switch (tc->state->data){
-  case CMNT_START:
-  case CMNT_TEXT:
+  case CMT_START:
+  case CMT_TEXT:
     if (c == '*'){
-      tc->state->data = CMNT_STAR;
+      tc->state->data = CMT_STAR;
     } else {
-      tc->state->data = CMNT_TEXT;
+      tc->state->data = CMT_TEXT;
     }
     break;
 
-  case CMNT_STAR:
+  case CMT_STAR:
     if (c == '/'){
-      tc->state->data = CMNT_DONE;
+      tc->state->data = CMT_DONE;
     } else if (c != '*'){
-      tc->state->data = CMNT_TEXT;
+      tc->state->data = CMT_TEXT;
     }
   }
 }
 
-/** Token state switch callback for comments */
-struct tokenState *tknstCmntNext(
+
+void tknstSCmtRead(
     int c,
     void *context
 ){
-  if (tc->states[STMT_CMNT]->data == CMNT_DONE){
-    return tc->states[TKNST_INTR];
+  TokenContext *tc = (TokenContext *) context;
+  if (c == '\n'){
+    tc->state->data = CMT_DONE;
+  }
+}
+
+
+/** Token state switch callback for comments */
+struct tokenState *tknstCmtNext(
+    int c,
+    void *context
+){
+  TokenContext *tc = (TokenContext *) context;
+  if (tc->state->data == CMT_DONE){
+    return tc->states + TKNST_INTR;
   } else {
     return tc->state;
   }

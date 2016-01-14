@@ -11,10 +11,12 @@
 #define TKNST_NUMR 1
 #define TKNST_SYMB 2
 #define TKNST_OPER 3
-#define TKNST_CMNT 4
-#define TKNST_COUNT 5
+#define TKNST_MCMT 4
+#define TKNST_SCMT 5
+#define TKNST_COUNT 6
 
 /** Operator indices */
+#define OPER_SCMT -2 // Single-line comment detected
 #define OPER_MCMT -1 // Multi-line comment detected
 #define OPER_NONE 0x00 // Initial operation
 #define OPER_EXCL 0x01 // ! 
@@ -47,10 +49,10 @@
 #define OPER_TLD  0x1C // ~
 
 /* Comment states */
-#define CMNT_START 0 // Start of comment
-#define CMNT_TEXT  1 // Middle of comment
-#define CMNT_STAR  2 // * symbol encountered
-#define CMNT_DONE  3 // */ encountered
+#define CMT_START 0 // Start of comment
+#define CMT_TEXT  1 // Middle of comment
+#define CMT_STAR  2 // * symbol encountered
+#define CMT_DONE  3 // */ encountered
 
 
 /*****************************************************************************\
@@ -235,18 +237,24 @@ struct tokenState *tknstOperNext(
 // Comment state
 
 /** Token state enter callback for comments */
-void tknstCmntEnter(
+void tknstCmtEnter(
     void *context
 );
 
-/** Token state read callback for comments */
-void tknstCmntRead(
+/** Token state read callback for multi-line comments */
+void tknstMCmtRead(
+    int c,
+    void *context
+);
+
+/** Token state read callback for single-line comments */
+void tknstSCmtRead(
     int c,
     void *context
 );
 
 /** Token state switch callback for comments */
-struct tokenState *tknstCmntNext(
+struct tokenState *tknstCmtNext(
     int c,
     void *context
 );

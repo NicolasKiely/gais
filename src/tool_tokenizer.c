@@ -85,7 +85,8 @@ int main(
     case TKNST_NUMR: fprintf(fout, "Numeric "); break;
     case TKNST_SYMB: fprintf(fout, "Symbol  "); break;
     case TKNST_OPER: fprintf(fout, "Operator"); break;
-    case TKNST_CMNT: fprintf(fout, "Comment "); break;
+    case TKNST_MCMT: fprintf(fout, "Comment "); break;
+    case TKNST_SCMT: fprintf(fout, "Comment "); break;
     default: fprintf(fout, "UNKOWN");
     }
     fprintf(fout, "\t%d\t%s\n", t->data, t->value);

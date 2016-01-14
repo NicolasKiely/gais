@@ -13,8 +13,8 @@ cc = $(CC) $(CFLAGS)
 ###############################################################################
 all: bin/gais_compiler bin/tool_tokenizer
 
-bin/gais_compiler: obj/lang_compiler.o obj/lang_tokenizer.o
-	$(cc) obj/lang_compiler.o obj/lang_tokenizer.o -o bin/gais_compiler
+bin/gais_compiler: obj/tool_compiler.o obj/lang_tokenizer.o
+	$(cc) obj/tool_compiler.o obj/lang_tokenizer.o -o bin/gais_compiler
 
 bin/tool_tokenizer: obj/tool_tokenizer.o obj/lang_tokenizer.o
 	$(cc) obj/tool_tokenizer.o obj/lang_tokenizer.o -o bin/tool_tokenizer
@@ -23,8 +23,8 @@ bin/tool_tokenizer: obj/tool_tokenizer.o obj/lang_tokenizer.o
 ###############################################################################
 # Intermediate object files                                                   #
 ###############################################################################
-obj/lang_compiler.o: src/lang_compiler.c src/lang_tokenizer.h
-	$(cc) -c src/lang_compiler.c -o obj/lang_compiler.o
+obj/tool_compiler.o: src/tool_compiler.c src/lang_tokenizer.h
+	$(cc) -c src/tool_compiler.c -o obj/tool_compiler.o
 
 obj/lang_tokenizer.o: src/lang_tokenizer.c src/lang_tokenizer.h
 	$(cc) -c src/lang_tokenizer.c -o obj/lang_tokenizer.o
