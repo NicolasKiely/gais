@@ -135,16 +135,16 @@ TokenState *tknstIntrNext(
     TokenContext *tc
 ){
   if (isspace(c)){
-    return tc->state + TKNST_INTR;
+    return tc->states + TKNST_INTR;
 
   } else if (isdigit(c)) {
-    return tc->state + TKNST_NUMR;
+    return tc->states + TKNST_NUMR;
 
   } else if (isoperator(c)) {
-    return tc->state + TKNST_OPER;
+    return tc->states + TKNST_OPER;
 
   } else {
-    return tc->state + TKNST_SYMB;
+    return tc->states + TKNST_SYMB;
   }
 
   //return NULL;
@@ -278,8 +278,12 @@ void tknstOperRead(
     }
     break;
 
-  default:
-    printf("Do not know how to proceed from state 0x%X\n", t->data);
+  case OPER_PLUS:
+    /* + */
+    if (c == '='){
+      t->data = OPER_PLUS_EQ;
+      splitOp = 0;
+    }
   }
 
   if (splitOp){
@@ -368,7 +372,8 @@ struct tokenState *tknstCmtNext(
     TokenContext *tc
 ){
   if (tc->state->data == CMT_DONE){
-    return tc->states + TKNST_INTR;
+    //return tc->states + TKNST_INTR;
+    return tknstIntrNext(c, tc);
   } else {
     return tc->state;
   }
@@ -417,7 +422,12 @@ void operatorInitState(
   case '*': t->data = OPER_STAR; break;
   case '+': t->data = OPER_PLUS; break;
   case '/': t->data = OPER_FSLS; break;
+  case ';': t->data = OPER_SCLN; break;
+  case '<': t->data = OPER_LT; break;
   case '=': t->data = OPER_EQ; break;
+  case '>': t->data = OPER_GT; break;
+  case '{': t->data = OPER_OCRL; break;
+  case '}': t->data = OPER_CCRL; break;
   default:
     printf("Unknown operator: %c\n", c);
   }

@@ -7,12 +7,12 @@
 #define TOKEN_INIT_SIZE 8
 
 /** Token state indices */
-#define TKNST_INTR 0
-#define TKNST_NUMR 1
-#define TKNST_SYMB 2
-#define TKNST_OPER 3
-#define TKNST_MCMT 4
-#define TKNST_SCMT 5
+#define TKNST_INTR  0
+#define TKNST_NUMR  1
+#define TKNST_SYMB  2
+#define TKNST_OPER  3
+#define TKNST_MCMT  4
+#define TKNST_SCMT  5
 #define TKNST_COUNT 6
 
 /** Operator indices */
@@ -47,6 +47,12 @@
 #define OPER_PIPE 0x1A // |
 #define OPER_CCRL 0x1B // }
 #define OPER_TLD  0x1C // ~
+/* Compound operators */
+#define OPER_EXCL_EQ 0x1D // !=
+#define OPER_MOD_EQ  0x1E // %=
+#define OPER_STAR_EQ 0x1F // *=
+#define OPER_PLUS_EQ 0x20 // +=
+
 
 /* Comment states */
 #define CMT_START 0 // Start of comment
