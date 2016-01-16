@@ -11,10 +11,13 @@ cc = $(CC) $(CFLAGS)
 ###############################################################################
 # Target binary files                                                         #
 ###############################################################################
-all: bin/gais_compiler bin/tool_tokenizer
+all: bin/gais_compiler bin/tool_syntax bin/tool_tokenizer
 
 bin/gais_compiler: obj/tool_compiler.o obj/lang_tokenizer.o obj/lang.o
 	$(cc) obj/tool_compiler.o obj/lang_tokenizer.o obj/lang.o -o bin/gais_compiler
+
+bin/tool_syntax: obj/tool_syntax.o obj/lang_tokenizer.o obj/lang.o
+	$(cc) obj/tool_syntax.o obj/lang_tokenizer.o obj/lang.o -o bin/tool_syntax
 
 bin/tool_tokenizer: obj/tool_tokenizer.o obj/lang_tokenizer.o obj/lang.o
 	$(cc) obj/tool_tokenizer.o obj/lang_tokenizer.o obj/lang.o -o bin/tool_tokenizer
@@ -31,6 +34,9 @@ obj/lang_tokenizer.o: src/lang_tokenizer.c src/lang_tokenizer.h src/lang.h
 
 obj/tool_compiler.o: src/tool_compiler.c src/lang_tokenizer.h
 	$(cc) -c src/tool_compiler.c -o obj/tool_compiler.o
+
+obj/tool_syntax.o: src/tool_syntax.c src/lang_tokenizer.h src/lang.h
+	$(cc) -c src/tool_syntax.c -o obj/tool_syntax.o
 
 obj/tool_tokenizer.o: src/tool_tokenizer.c src/lang_tokenizer.h
 	$(cc) -c src/tool_tokenizer.c -o obj/tool_tokenizer.o
