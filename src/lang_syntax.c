@@ -60,8 +60,21 @@ Scope *parseTokens(
     }
 
     /* Check for interstate transitions */
+    if (next != pc.astate){
+      /* Entering new parser state, so call exit and enter functions */
+      if (pc.astate->exit){
+        pc.astate->exit(&pc);
+      }
+      pc.astate = next;
+      if (pc.astate->enter){
+        pc.astate->enter(&pc);
+      }
+    }
 
     /* Process token */
+    if (pc.astate->read){
+      pc.astate->read(&pc, token);
+    }
   }
 
   /* Return root context */
