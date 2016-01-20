@@ -64,6 +64,9 @@ struct parserContext
   /* Root parsing scope */
   Scope *root;
 
+  /* Active parser state */
+  ParserState *astate;
+
   /* Array of parser states */
   ParserState states[PARST_COUNT];
 };
@@ -85,6 +88,13 @@ void initializeParserContext(
  * @param token Root token to parse
  */
 Scope *parseTokens(
+    Token *token
+);
+
+
+/** Intermediate next callback */
+ParserState *parstIntrNext(
+    Parser *pc,
     Token *token
 );
 

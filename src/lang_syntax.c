@@ -27,6 +27,7 @@ void initializeParserContext(
     Parser *pc
 ){
   pc->root = newScope();
+  pc->astate = pc->states;
 
   /* Initial/Indeterminate state */
   pc->states[PARST_INTR].enter = NULL;
@@ -49,9 +50,14 @@ Scope *parseTokens(
   /* Loop over tokens */
   for (; token != NULL; token = token->next){
     /* Get next parsing state for given token */
-    // ***getNextParseState()
+    ParserState *next = pc.astate->next(&pc, token);
 
-    // Error check parse state
+    if (!next){
+      /* Error state encountered */
+      fprintf(stderr, "Invalid token encountered\n");
+      freeScope(pc.root);
+      return NULL;
+    }
 
     /* Check for interstate transitions */
 
@@ -60,4 +66,13 @@ Scope *parseTokens(
 
   /* Return root context */
   return pc.root;
+}
+
+
+/* Initial/Indeterminate state */
+ParserState *parstIntrNext(
+    Parser *pc,
+    Token *token
+){
+  return NULL;
 }
