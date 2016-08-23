@@ -276,15 +276,49 @@ void tknstOperRead(
     switch (c){
     case '*': t->data = OPER_MCMT; splitOp=0; break;
     case '/': t->data = OPER_SCMT; splitOp=0; break;
+    case '=': t->data = OPER_FSLS_EQ; splitOp=0; break;
     }
     break;
 
   case OPER_PLUS:
     /* + */
+    switch (c){
+    case '+': t->data = OPER_PLUS_PLUS; splitOp=0; break;
+    case '=': t->data = OPER_PLUS_EQ; splitOp=0; break;
+    }
+    break;
+
+  case OPER_DASH:
+    /* - */
+    switch (c){
+    case '-': t->data = OPER_DASH_DASH; splitOp=0; break;
+    case '=': t->data = OPER_DASH_EQ; splitOp=0; break;
+    }
+    break;
+
+  case OPER_LT:
+    /* < */
     if (c == '='){
-      t->data = OPER_PLUS_EQ;
+      t->data = OPER_LT_EQ;
       splitOp = 0;
     }
+    break;
+
+  case OPER_EQ:
+    /* = */
+    if (c == '='){
+      t->data = OPER_EQ_EQ;
+      splitOp = 0;
+    }
+    break;
+
+  case OPER_GT:
+    /* > */
+    if (c == '='){
+      t->data = OPER_GT_EQ;
+      splitOp = 0;
+    }
+    break;
   }
 
   if (splitOp){
@@ -422,6 +456,7 @@ void operatorInitState(
   case ')': t->data = OPER_CPRN; break;
   case '*': t->data = OPER_STAR; break;
   case '+': t->data = OPER_PLUS; break;
+  case '-': t->data = OPER_DASH; break;
   case '/': t->data = OPER_FSLS; break;
   case ';': t->data = OPER_SCLN; break;
   case '<': t->data = OPER_LT; break;
