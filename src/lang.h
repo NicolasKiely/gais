@@ -7,42 +7,52 @@
 
 
 /** Operator indices */
-#define OPER_SCMT -2 // Single-line comment detected
-#define OPER_MCMT -1 // Multi-line comment detected
-#define OPER_NONE 0x00 // Initial operation
-#define OPER_EXCL 0x01 // ! 
-#define OPER_HASH 0x02 // #
-#define OPER_SYS  0x03 // $
-#define OPER_MOD  0x04 // %
-#define OPER_AMP  0x05 // &
-#define OPER_OPRN 0x06 // (
-#define OPER_CPRN 0x07 // )
-#define OPER_STAR 0x08 // *
-#define OPER_PLUS 0x09 // +
-#define OPER_COM  0x0A // ,
-#define OPER_DASH 0x0B // -
-#define OPER_DOT  0x0C // .
-#define OPER_FSLS 0x0D // /
-#define OPER_CLN  0x0E // :
-#define OPER_SCLN 0x0F // ;
-#define OPER_LT   0x10 // <
-#define OPER_EQ   0x11 // =
-#define OPER_GT   0x12 // >
-#define OPER_HUH  0x13 // ?
-#define OPER_AT   0x14 // @
-#define OPER_OBRK 0x15 // [
-#define OPER_BSLS 0x16 // Backslash
-#define OPER_CBRK 0x17 // ]
-#define OPER_CRT  0x18 // ^
-#define OPER_OCRL 0x19 // {
-#define OPER_PIPE 0x1A // |
-#define OPER_CCRL 0x1B // }
-#define OPER_TLD  0x1C // ~
+enum Lexical_Operators {
+  OPER_SCMT = -2, // Single-line comment detected
+  OPER_MCMT = -1, // Multi-line comment detected
+  OPER_NONE =  0, // Initial operation
+  OPER_EXCL, // !
+  OPER_HASH, // #
+  OPER_SYS,  // $
+  OPER_MOD,  // %
+  OPER_AMP,  // &
+  OPER_OPRN, // (
+  OPER_CPRN, // )
+  OPER_STAR, // *
+  OPER_PLUS, // +
+  OPER_COM,  // ,
+  OPER_DASH, // -
+  OPER_DOT,  // .
+  OPER_FSLS, // /
+  OPER_CLN,  // :
+  OPER_SCLN, // ;
+  OPER_LT,   // <
+  OPER_EQ,   // =
+  OPER_GT,   // >
+  OPER_HUH,  // ?
+  OPER_AT,   // @
+  OPER_OBTK, // [
+  OPER_BSLS, // Backslash
+  OPER_CBRK, // ]
+  OPER_CRT,  // ^
+  OPER_OCRL, // {
+  OPER_PIPE, // |
+  OPER_CCRL, // }
+  OPER_TLD,  // ~
+
 /* Compound operators */
-#define OPER_EXCL_EQ 0x1D // !=
-#define OPER_MOD_EQ  0x1E // %=
-#define OPER_STAR_EQ 0x1F // *=
-#define OPER_PLUS_EQ 0x20 // +=
+  OPER_EXCL_EQ,   // !=
+  OPER_MOD_EQ,    // %=
+  OPER_STAR_EQ,   // *=
+  OPER_PLUS_PLUS, // ++
+  OPER_PLUS_EQ,   // +=
+  OPER_DASH_DASH, // --
+  OPER_DASH_EQ,   // -=
+  OPER_FSLS_EQ,   // /=
+  OPER_LT_EQ,     // <=
+  OPER_EQ_EQ,     // ==
+  OPER_GT_EQ,     // >=
+};
 
 /* Macro for building Keyword records */
 #define KW_RECORD(NME) {KI_ ## NME, KW_ ## NME, KS_ ## NME, KS_ ## NME}
