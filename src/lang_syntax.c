@@ -87,5 +87,15 @@ ParserState *parstIntrNext(
     Parser *pc,
     Token *token
 ){
+  switch (token->type){
+  case TKNST_INTR:
+    fprintf(stderr, "Invalid blank token %s\n", token->value);
+    return NULL;
+
+  case TKNST_NUMR:
+    fprintf(stderr, "Expected identifier before "
+      "bare number: %s\n", token->value);
+    return NULL;
+  }
   return NULL;
 }
